@@ -58,7 +58,7 @@ public:
 				&destination,
 				transform.rotation,
 				NULL,
-				SDL_FLIP_NONE
+				sprite.flip
 			);
 
 			//Logger::info("Rendered entity id = " + std::to_string(entity.getId()));

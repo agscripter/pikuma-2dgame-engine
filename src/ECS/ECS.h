@@ -177,8 +177,8 @@ private:
 
 	std::deque<int> freeIds;
 
+	std::unordered_map<std::string, Entity> entityPerTag;
 	std::unordered_map<int, std::string> tagPerEntity;
-	std::unordered_map<std::string, Entity> tagPerEntity;
 
 	std::unordered_map<std::string, std::set<Entity>> entitiesPerGroup;
 	std::unordered_map<int, std::string> groupPerEntity;
@@ -214,7 +214,7 @@ public:
 	void removeEntityTag(Entity entity);
 
 	void groupEntity(Entity entity, const std::string& group);
-	bool entityBelongsToGroup(Entity entity, const std::string& group);
+	bool entityBelongsToGroup(Entity entity, const std::string& group) const;
 	std::vector<Entity> getEntitiesByGroup(const std::string& group) const;
 	void removeEntityGroup(Entity entity);
 

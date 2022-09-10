@@ -90,6 +90,8 @@ void Registry::update() {
 		entityComponentSignatures[entity.getId()].reset();
 
 		freeIds.push_back(entity.getId());
+		removeEntityTag(entity);
+		removeEntityGroup(entity);
 	}
 	entitiesToBeKilled.clear();
 };
@@ -126,7 +128,7 @@ bool Registry::entityHasTag(Entity entity, const std::string& tag) const {
 	if (tagPerEntity.find(entity.getId()) == tagPerEntity.end()) {
 		return false;
 	}
-	return entityPerTag.at(tag);
+	return entityPerTag.find(tag)->second == entity;
 }
 
 Entity Registry::getEntityByTag(const std::string& tag) const {
@@ -142,13 +144,45 @@ void Registry::removeEntityTag(Entity entity) {
 	}
 }
 
-void Registry::groupEntity(Entity entity, const std::String& group) {
+void Registry::groupEntity(Entity entity, const std::string& group) {
 	entitiesPerGroup.emplace(group, std::set<Entity>());
-	entitiesPerGroup[group].emplace(entity);
-	groupPerEntity.emplace(entity.getId(), group);
+    entitiesPerGroup[group].emplace(entity);
+    groupPerEntity.emplace(entity.getId(), group);
 }
 
 bool Registry::entityBelongsToGroup(Entity entity, const std::string& group) const {
-	
+	if (entitiesPerGroup.find(group) == entitiesPerGroup.end()) {
+		return false;
+	}
+
+	auto groupEntities = entitiesPerGroup.at(group);
+    return groupEntities.find(entity.getId()) != groupEntities.end();
 }
+
+std::vector<Entity> Registry::getEntitiesByGroup(const std::string& group) const {
+	auto &setOfEntities = entitiesPerGroup.at(group);
+	return std::vector<Entity>(setOfEntities.begin(), setOfEntities.end());
+}
+
+void Registry::removeEntityGroup(Entity entity) {
+	auto groupedEntity = groupPerEntity.find(entity.getId());
+	if (groupedEntity != groupPerEntity.end()) {
+		auto group = entitiesPerGroup.find(groupedEntity->second);
+		if (group != entitiesPerGroup.end()) {
+			auto entityInGroup = group->second.find(entity);
+			if (entityInGroup != group->second.end()) {
+				group->second.erase(entityInGroup);
+			}
+		}
+		groupPerEntity.erase(groupedEntity);
+	}
+}
+
+
+
+
+
+
+
+
 

@@ -2,9 +2,7 @@
 #define SPRITECOMPONENT_H
 
 #include <string>
-
 #include <SDL2/SDL.h>
-
 #include "../ECS/ECS.h"
 
 struct SpriteComponent : IComponent {
@@ -12,6 +10,7 @@ struct SpriteComponent : IComponent {
 	int width;
 	int height;
 	int zIndex;
+	SDL_RendererFlip flip;
 	bool isFixed;
 	SDL_Rect sourceRect;
 
@@ -26,6 +25,7 @@ struct SpriteComponent : IComponent {
 		this->width = width;
 		this->height = height;
 		this->zIndex = zIndex;
+		this->flip = SDL_FLIP_NONE;
 		this->isFixed = isFixed;
 		this->sourceRect = {
 			sourceRectangleX, 

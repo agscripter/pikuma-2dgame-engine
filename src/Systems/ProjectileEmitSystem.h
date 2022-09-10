@@ -3,6 +3,8 @@
 
 #include <SDL2/SDL.h>
 
+#include "../Logger/Logger.h"
+
 #include "../EventBus/EventBus.h"
 #include "../Events/KeyPressedEvent.h"
 #include "../ECS/ECS.h"
@@ -27,7 +29,7 @@ public:
 
 	void onKeyPressed(KeyPressedEvent& event) {
 		if (event.symbol == SDLK_SPACE) {
-			Logger::info("Shooting");
+			Logger::info("Shooting projectiles");
 			for (auto entity : getEntities()) {
 				if (entity.hasComponent<CameraFollowComponent>()) {
 					const auto projectileEmitter = entity.getComponent<ProjectileEmitterComponent>();
@@ -55,6 +57,7 @@ public:
 					projectileVelocity.y = projectileEmitter.velocity.y * directionY;
 
 					Entity projectile = entity.registry->createEntity();
+					projectile.group("projectiles");
 					projectile.addComponent<TransformComponent>(projectilePosition, glm::vec2(1.0, 1.0), 0);
 					projectile.addComponent<RigidBodyComponent>(projectileVelocity);
 					projectile.addComponent<SpriteComponent>("bullet-image", 4, 4, 4);
@@ -76,6 +79,7 @@ public:
 
 			if (SDL_GetTicks() - projectileEmitter.lastEmissionTime > projectileEmitter.repeatFrequency) {
 				Entity projectile = registry->createEntity();
+				projectile.group("projectiles");
 
 				glm::vec2 projectilePosition = transform.position;
 
